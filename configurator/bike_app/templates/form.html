@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+  E-Bike Configurator Thingy
+{% endblock %}
+<!-- <html>
+<head> 
+    <link rel="stylesheet" href="/static/bootstrap/css/style.css" />
+    
+    <!-- Bootstrap core CSS -->
+    <!-- <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <!--<link href="/static/bootstrap/starter-template.css" rel="stylesheet">
+</head> -->
+{% block content %}
+<!-- <body> -->
+  <form class="enter" action="results.html" id="price" method="post">
+   {% csrf_token %}
+    <h2>What is your budget?</h2>
+  <select name="bikes">
+    <option value="$1501 - $2500">$1501 - $2500</option>
+    <option value="$2501 - $3500">$2501 - $3500</option>
+    <option value="$3501 - $4500">$3501 - $4500</option>
+    <option value="More than $4501">MORE THAN $4501</option>
+  </select>
+      <h2>What your primary use for the bike?</h2>
+  <select name="bikeUse">
+    <option value="Commuter & Urban">Commuter & Urban</option>
+    <option value="Comfort Cruiser">Comfort Cruiser</option>
+    <option value="Cargo & Hauling">Cargo & Hauling</option>
+  </select>
+      <h2>What is the maximum number of miles you will regularly travel between recharging?</h2>
+      <blockquote>Range costs money.  If no bikes appear in the results, decrease the selected range or increase the budget</blockquote>
+  <select name="bikeRange">
+    <option value="20">Up to 20 Miles</option>
+    <option value="40">21 to 40 Miles</option>
+    <option value="60">41 - 60 Miles</option>
+    <option value="150"More than 60 Miles</option>
+  </select>
+  <h2>What is the maximum top speed you would like to travel?</h2>
+  <blockquote>Rated top speeds are under ideal conditions of flat terrain,
+  no headwind, rider weight of 150lbs or less and full battery charge</blockquote>
+  <select name="bikeSpeed">
+    <option value="19">Less than 20MPH</option>
+    <option value="20">20 MPH</option>
+    <option value="21">More than 20MPH</option>
+  </select>
+  <br><br>
+<input type="submit" class="btn btn-primary btn-lg" value="Submit Questionaire" />
+  <br><br>
+</form>
+{% endblock %}
+<!-- </body>
+</html> -->

@@ -1,0 +1,4 @@
+*.pyc
+bike_app/static/bootstrap/bootstrap-3.3.6/
+bike_app/static/bootstrap/dist/
+bike_app/static/bootstrap/fonts/

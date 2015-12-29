@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>E-Bike Configurator Poop</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- <link href="css/bootstrap.min.css" rel="stylesheet"> ->>
+
+    <!-- Custom CSS -->
+    <!-- <link href="css/small-business.css" rel="stylesheet"> --> 
+    <link href="/static/bootstrap/css/small-business.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <!-- <a class="navbar-brand" href="#">
+                    <img src="http://placehold.it/150x50&text=Logo" alt="">
+                </a> -->
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="#">Jelly Beans</a>
+                    </li>
+                    <li>
+                        <a href="#">Services</a>
+                    </li>
+                    <li>
+                        <a href="#">Contact</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+            </div>
+        </nav>
+    <div class="content container">
+        <div class="row">
+            <div class="col-md-5">
+                <img class="img-responsive img-rounded" src="https://ksr-ugc.imgix.net/projects/229825/photo-original.jpg?v=1397787128&w=1536&h=1152&fit=crop&auto=format&q=92&s=6e5d05f335a279f9e959b24b8ca29f53" alt="">
+            </div>
+            <div class="col-md-6a">
+                <h2 align="right">Your Source for E-Bike Information</h2> 
+            </div>
+        </div>
+        <!-- /.row -->
+
+        <hr>
+
+        <!-- Call to Action Well -->
+            <div>
+                <div class="row"></div>
+                    <div class="col-lg-12"></div>
+                    <div class="well text-center"></div>
+                {% block content %}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+</body>
+
+
+</html>

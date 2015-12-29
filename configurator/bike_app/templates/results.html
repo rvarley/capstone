@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+  E-Bike Configurator Results
+{% endblock %}
+
+<html>
+<head>
+    <link rel="stylesheet" href="/static/bootstrap/css/style.css" /> 
+    <!-- Bootstrap core CSS -->
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet" /> 
+
+    <!-- Custom styles for this template -->
+    <link href="/static/bootstrap/starter-template.css" rel="stylesheet">
+
+</head>
+{% block content %}
+<body>
+<!-- <form action="action_page.php"> -->
+
+  <div class="results" id="results">
+    <h2 align="center">Matching Bike Results</h2>
+    <table id= "results_table" class="table">
+       <tr>
+          <th style='font-weight: bold;'>Bike Model</th>
+          <th style='font-weight: bold;'>Best Uses</th>
+          <th style='font-weight: bold;'>Bike Price</th>
+        </tr>
+        {% for bike in bikes %}
+           <tr>
+              <td>{{ bike.Model }}</td>
+              <td>{{ bike.Best_Use }}</td>
+              <td>{{ bike.Price }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+  </div>
+</body>
+{% endblock %}
+</html>

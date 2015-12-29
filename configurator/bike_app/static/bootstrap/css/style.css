@@ -1,0 +1,41 @@
+table, th, td {
+    background-color: #dddddd;
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+ 
+
+table {
+    box-shadow: 3px 7px 5px #888888;
+    width: 100%;
+}
+
+#actions {
+    display: inline-block;
+    vertical-align: center;
+    border:1px solid #000000;
+    margin: 0 auto;
+    background-color: #d1d1d1;
+    box-shadow: 3px 7px 5px #888888;
+    padding-top: 15px;
+    width: 100%;   
+    height: 145px;
+}
+
+.enter,
+.choose,
+.delete,
+.refresh {
+    background-color: #dddddd;
+    padding-left: 15px;
+
+}
+
+
+.select {
+	background-color: gray
+}
+
+.no-select {
+	background-color: white;
+}
