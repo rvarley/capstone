@@ -2,7 +2,12 @@ import django
 django.setup()
 from bike_app.models import Bike
 import scrapy
-import string, csv, json
+import locale
+from scrapy_djangoitem import DjangoItem
+
+
+class BikeItem(DjangoItem):
+    django_model = Bike
 
 
 class PropelSpider(scrapy.Spider):
@@ -13,17 +18,17 @@ class PropelSpider(scrapy.Spider):
     ]
 
     def parse(self, response):
-        filename = "input.csv"
-        for models in response.xpath('//*[@id="content"]/div[3]/div[3]'):  # goes to grid page of models
-            with open(filename, 'wb') as f:
-                f.write(string.join(models.xpath('//*[@id="content"]/div[3]/div[3]/div/div[2]/a/text()').extract(), ","))
-        csvfile = open('input.csv', 'r')
-        jsonfile = open('output.json', 'w')
+        models = response.xpath("//div[@class='name']/a/text()").extract()
+        prices = response.xpath("//span[@class='price-fixed']/text()").extract()
+        locale.setlocale(locale.LC_ALL, '')
 
-        fieldnames = ("Model")
-        reader = csv.DictReader(csvfile, fieldnames)
-        for row in reader:
-            json.dump(row, jsonfile)
-            jsonfile.write('\n')
-        # b = Bike(Model="dodo4 Bike")
-        # b.save()
+
+        for i in range(len(models)):
+            b = BikeItem()
+            price = prices[i].strip('$')
+            price = locale.atof(price[:])
+            b['Model'] = models[i]
+            b['Price'] = price
+            bike = b.save()
+            print bike.Model
+            print bike.Price
