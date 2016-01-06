@@ -25,7 +25,7 @@ def form_page(request):
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
         for row in spamreader:
             for i, field in enumerate(row):
-                b = Bike(Model=row[i])
+                b = Bike(model=row[i])
                 b.save()
 
     # bike_ = Bike.objects.all()  # returns list of Bike objects
@@ -41,17 +41,19 @@ def submit_response(request):
     selected_use = request.POST['bikeUse']
     selected_range = request.POST['bikeRange']
     selected_speed = request.POST['bikeSpeed']
-    if len(re.findall(r'\d+', selected_choice)) == 2:
+    if len(re.findall(r'\d+', selected_choice)) == 2:  # user selects price range
         lower_val = (re.findall(r'\d+', selected_choice))[0]
         upper_val = (re.findall(r'\d+', selected_choice))[1]
-    else:
+    else:  # In case user selects a price of > 4500.
         lower_val = (re.findall(r'\d+', selected_choice))[0]
         upper_val = "10000"
 
-    bikes = Bike.objects.filter(Price__gte=lower_val).filter(Price__lt=upper_val).filter(Best_Use__icontains=selected_use)  # returns list of Bike objects
-    print("***** selected_range is: ", selected_range)
-    print("***** selected_speed is: ", selected_speed)
-    print("***** selected_use is: ", selected_use)
-    print("***** bikes:bikes is: ", {'bikes': bikes})
+    bikes = Bike.objects.filter(price__gte=lower_val).filter(price__lt=upper_val).filter(best_use__icontains=selected_use)  # returns list of Bike objects
+    # print("***** selected_range is: ", selected_range)
+    # print("***** selected_speed is: ", selected_speed)
+    # print("***** selected_use is: ", selected_use)
+    # print("***** bikes:bikes is: ", {'bikes': bikes})
+    for bike in bikes:
+        print("***** bike.model is: ", bike.price)
     return render(request, 'results.html', {'bikes': bikes})
     # return HttpResponseRedirect(reverse('results'))
