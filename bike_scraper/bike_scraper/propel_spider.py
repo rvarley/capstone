@@ -4,8 +4,7 @@ from bike_app.models import Bike
 import scrapy
 from scrapy_djangoitem import DjangoItem
 import locale
-
-# bike_dic = {}
+import re
 
 
 class BikeItem(DjangoItem):
@@ -20,19 +19,16 @@ class SpecsItem(scrapy.Item):
 class PropelSpider(scrapy.Spider):
     name = "propel"
     allowed_domains = ["propelbikes.com"]
-    # start_urls = ["http://propelbikes.com/bikes-by-price/3501-4500",]
     start_urls = ["http://propelbikes.com/bikes-by-price/more-than-4501",
                   "http://propelbikes.com/bikes-by-price/3501-4500",
                   "http://propelbikes.com/bikes-by-price/2501-3500",
                   "http://propelbikes.com/bikes-by-price/1501-2500"]
 
     def parse(self, response):
-        # global bike_dic
         models = response.xpath("//div[@class='name']/a/text()").extract()
         prices = response.xpath("//span[@class='price-fixed']/text()").extract()
         locale.setlocale(locale.LC_ALL, '')
         urls = response.xpath("//div[@class='name']/a/@href").extract()
-
         for i in range(len(models)):
             b = BikeItem()
             price = prices[i].strip('$')
@@ -48,7 +44,6 @@ class PropelSpider(scrapy.Spider):
             yield scrapy.Request(urls[i], callback=self.parse_attr)
 
     def parse_attr(self, response):
-        # global bike_dic
         bike_dic = {}
         b = BikeItem()
         spec = SpecsItem()
@@ -56,18 +51,17 @@ class PropelSpider(scrapy.Spider):
         spec["attr"] = response.xpath('//*[@id="tab-attribute"]/table/tbody/tr/td/text()').extract()
         bike_dic = dict(map(None, *[iter(spec["attr"])]*2))  # Converts list spec["attr"] to dict
         b = Bike.objects.get(url=Url)
-        # range = [int(s) for s in bike_dic["Range"].split() if s.isdigit()][0]
         b_range = filter(str.isdigit, bike_dic["Range"].encode('ascii', 'ignore'))
         best_use = bike_dic["Best Use"]
         assistance = bike_dic["Assistance"]
         motor = bike_dic["Motor"]
         top_speed = bike_dic["Top Speed"]
+        top_speed = max(map(float, re.findall(r'\d*\.?\d+', top_speed)))
         if "Weight" in bike_dic:
             weight = bike_dic["Weight"]
             b.weight = weight
         brakes = bike_dic["Brakes"]
         battery = bike_dic["Battery"]
-        # getting int range out of string
         b.b_range = b_range
         b.best_use = best_use
         b.assistance = assistance
@@ -75,4 +69,15 @@ class PropelSpider(scrapy.Spider):
         b.top_speed = top_speed
         b.brakes = brakes
         b.battery = battery
+        b.photo = response.xpath('//*[@id="content"]/div[3]/div[1]/div[1]/div[1]/a/img/@src').extract()
+        # These if's are necessary for 4 cases which xpath to photos isn't
+        # in the usual place.
+        if not b.photo:
+            b.photo = response.xpath('//*[@id="content"]/div[4]/div[1]/div[1]/div/a/img/@src').extract()
+            if not b.photo:
+                b.photo = response.xpath('//*[@id="content"]/div/div[1]/div[1]/div/a/@href').extract()
+                print "!!! b.photo and Url for felt bike is: "
+                print b.photo
+                print Url
+        b.photo = b.photo[0].encode("ascii", "ignore")
         b.save()
