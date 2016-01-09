@@ -36,11 +36,18 @@ class PropelSpider(scrapy.Spider):
             b['model'] = models[i]
             b['price'] = price
             b['url'] = urls[i]
+            if Bike.objects.filter(model=b['model']).exists():
+                print "!!! Bike exists, doing nothing !!!"
+                print b['model']
+                continue
             b.save()
-
         for i in range(len(models)):
             b = BikeItem()
             b['model'] = models[i]
+            if Bike.objects.filter(model=b['model']).exists():
+                print "!!! Bike exists, doing nothing !!!"
+                print b['model']
+                continue
             yield scrapy.Request(urls[i], callback=self.parse_attr)
 
     def parse_attr(self, response):
@@ -60,7 +67,7 @@ class PropelSpider(scrapy.Spider):
         if "Weight" in bike_dic:
             weight = bike_dic["Weight"]
             b.weight = weight
-        brakes = bike_dic["Brakes"]
+        brakes = bike_dic["Brakes"].rstrip('\r+\n')
         battery = bike_dic["Battery"]
         b.b_range = b_range
         b.best_use = best_use
