@@ -14,6 +14,7 @@ class Bike(models.Model):
     weight = models.CharField(max_length=12, default="n/a")
     brakes = models.TextField(default="n/a")
     battery = models.TextField(default="n/a")
+    comments = models.TextField(default="n/a")
 
     def __unicode__(self):
         # return self.model
