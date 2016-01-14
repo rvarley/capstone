@@ -32,7 +32,9 @@
         </tr>
         {% for bike in bikes %}
            <tr>
-              <td style="max-width:135px;"><a href="{{bike.url}}">{{ bike.model }}</a></td>
+              <td style="max-width:135px;"><form action="bike_details.html" method="post"><input type="submit" value="{{bike.model}}" name="bike_model" />
+              {% csrf_token %}
+            </form></td>
               <td style="max-width:50px;">{{ bike.price }}</td>
               <td style="max-width:100px;">{{ bike.best_use }}</td>
               <td style="max-width:50px;">{{ bike.b_range }}</td>
