@@ -22,4 +22,6 @@ urlpatterns = [
     url(r'^$', views.home_page, name='home'),
     url(r'^results', views.submit_response, name='submit_response'),
     url(r'^form', views.form_page, name='form'),
+    url(r'^bike_details', views.bike_details, name='bike_details'),
+    # url(r'^bike_details/(?P<bike_model>[a-zA-Z0-9]*)/*', views.bike_details, name='bike_details'),
 ]
