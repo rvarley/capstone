@@ -74,9 +74,20 @@ class PropelSpider(scrapy.Spider):
             b.weight = weight
         brakes = bike_dic["Brakes"].rstrip('\r+\n')
         battery = bike_dic["Battery"]
-        battery = battery.replace(',', '')
+        battery = battery.replace(',', '')  # get rid of any #'s with commas
+
         # battery = re.findall(r'\d*\.?\d+[A,a,V,v,W,w,WH,Wh,wH,wh]+', battery)
         battery = re.findall(r'\d*\.?\d+\s*[A,a,V,v,WH,Wh,wH,wh]+', battery)
+        # if len(battery) > 3:  # Only save info on standard battery in database
+        bat = []
+        print " !!! Value of battery is  !!!", battery
+        for i in range(len(battery)):
+            print "!!! Value of i is ", i
+            print "!!! Value of battery[i] is ", battery[i]
+            if (i > 0) & ('v' in battery[i].lower()):  # save only 1st set of
+                break                                  # battery values
+            bat.append(battery[i])
+        battery = bat
         b.b_range = b_range
         b.best_use = best_use
         b.assistance = assistance
