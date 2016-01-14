@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+  Bike Details
+{% endblock %}
+
+<html>
+<head>
+    <link rel="stylesheet" href="/static/bootstrap/css/style.css" /> 
+    <!-- Bootstrap core CSS -->
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet" /> 
+
+    <!-- Custom styles for this template -->
+    <link href="/static/bootstrap/starter-template.css" rel="stylesheet">
+
+</head>
+{% block content %}
+
+<body>
+<!-- <form action="action_page.php"> -->
+  <div class="results" id="results">
+  {% for bike in bikes %}
+    <h2 align="center">{{ bike.model }}</h2>
+
+    <table id= "results_table" class="table">
+           <tr>
+              <td>Supplier Website</td>
+              <td style="max-width:135px;"><a href="{{bike.url}}">{{ bike.model }}</a></td>
+            </tr>
+           <tr>
+              <td>Max Range in Miles </td>
+              <td>{{ bike.b_range }}</td>
+            </tr>
+           <tr>
+              <td>Battery Technology</td>
+              <td>{{ bike.battery }}</td>
+            </tr>
+    </table> 
+  {% endfor %}
+  </div>
+</body>
+{% endblock %}
+</html>
