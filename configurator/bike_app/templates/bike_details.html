@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-{% extends 'base.html' %}
+{% extends 'base1.html' %}
 {% load staticfiles %}
 
 {% block title %}
@@ -21,7 +21,7 @@
 <body>
 <!-- <form action="action_page.php"> -->
   <div class="results" id="results">
-  {% for bike in bikes %}
+  <!-- {% for bike in bikes %} -->
     <h2 align="center">{{ bike.model }}</h2>
 
     <table id= "results_table" class="table">
@@ -30,15 +30,39 @@
               <td style="max-width:135px;"><a href="{{bike.url}}">{{ bike.model }}</a></td>
             </tr>
            <tr>
-              <td>Max Range in Miles </td>
+              <td>Best Use </td>
+              <td>{{ bike.best_use }}</td>
+           </tr>
+           <tr>
+              <td>Max Range (Miles) </td>
               <td>{{ bike.b_range }}</td>
-            </tr>
+           </tr>
+           <tr>
+              <td>Top Speed (MPH) </td>
+              <td>{{ bike.top_speed }}</td>
+           </tr>
+           <tr>
+              <td>Motor Type</td>
+              <td>{{ bike.motor }}</td>
+           </tr>
            <tr>
               <td>Battery Technology</td>
               <td>{{ bike.battery }}</td>
-            </tr>
+           </tr>
+           <tr>
+              <td>Weight (Pounds)</td>
+              <td>{{ bike.weight }}</td>
+           </tr>
+           <tr>
+              <td>Brakes</td>
+              <td>{{ bike.brakes }}</td>
+           </tr>
+           <tr>
+              <td>Remarks</td>
+              <td>{{ bike.comments }}</td>
+           </tr>
     </table> 
-  {% endfor %}
+  <!-- {% endfor %} -->
   </div>
 </body>
 {% endblock %}
