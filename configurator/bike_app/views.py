@@ -1,15 +1,6 @@
 from django.shortcuts import render
-# from django.http import HttpResponse
-from django.http import HttpResponseRedirect
-from django.core.urlresolvers import reverse
 import re  # allows use of regex
 from bike_app.models import Bike
-import csv  # Allows reading CSV file into database
-# import tablib
-# import os
-
-
-# Create your views here.
 
 
 def home_page(request):
@@ -24,8 +15,8 @@ def form_page(request):
 def submit_response(request):
     selected_choice = request.POST['bikes']
     selected_use = request.POST['bikeUse']
-    # selected_range = request.POST['bikeRange']
-    # selected_speed = request.POST['bikeSpeed']
+    selected_range = request.POST['bikeRange']
+    selected_speed = request.POST['bikeSpeed']
     if len(re.findall(r'\d+', selected_choice)) == 2:  # user selects price range
         lower_val = (re.findall(r'\d+', selected_choice))[0]
         upper_val = (re.findall(r'\d+', selected_choice))[1]
@@ -33,28 +24,25 @@ def submit_response(request):
         lower_val = (re.findall(r'\d+', selected_choice))[0]
         upper_val = "10000"
 
-    bikes = Bike.objects.filter(price__gte=lower_val).filter(price__lt=upper_val).filter(best_use__icontains=selected_use)  # returns list of Bike objects
+    bikes = Bike.objects.filter(price__gte=lower_val)\
+        .filter(price__lte=upper_val).filter(best_use__icontains=selected_use)\
+        .filter(top_speed__gte=selected_speed)\
+        .filter(b_range__gte=selected_range)  # returns list of Bike objects
 
-    # print("***** bikes:bikes is: ", {'bikes': bikes})
-    for bike in bikes:
-        print("***** bike.model is: ", bike.price)
+    print("***** selected_use is:", selected_use)
+    print("***** lower val {}: ".format(lower_val))
+    print("***** upper val {}: ".format(upper_val))
+    print("***** selected_range {}: ".format(selected_range))
+    print("***** Type, selected_range is: ", type(selected_range))
+    # for bike in bikes:
+    #     print("***** bike.model is:", bike.model)
     return render(request, 'results.html', {'bikes': bikes})
-    # return HttpResponseRedirect(reverse('results'))
 
 
 def bike_details(request):
-    # bikes = Bike.objects.all()  # returns list of Bike objects
-    # selected_choice = request.POST['bikes']
-    # print("selected choice in bike_details is "), selected_choice
-    # selected_use = request.POST['bikeUse']
-    # bikey = request.session.get('url')
-    # print("!!! Bike Model: ", bike_model)
-    # print("!!! Bikey: ", bikey)
-    # bike_model = request.get("bike_model")
-    # print("bike_model is: ", bike_model)
+
     bike_model = request.POST['bike_model']
     print("!!! Bike Model:  ", bike_model)
-    bikes = Bike.objects.filter(model__icontains='Faraday')  # returns list of Bike objects
-    for bike in bikes:
-        print("***** bike.model in views.bike_deails is: ", bike.model)
+    bikes = Bike.objects.filter(model__icontains=bike_model)  # returns list of Bike objects
+    print("***** bikes type in views.bike_details is: ", type(bikes))
     return render(request, 'bike_details.html', {'bikes': bikes})
