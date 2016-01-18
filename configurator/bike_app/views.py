@@ -4,16 +4,34 @@ from bike_app.models import Bike
 
 
 def home_page(request):
+    """
+    Renders the home page.
+    home variable used so base.html template knows what to display
+    when inherited by the home.html template.
+    """
+
     home = {"home": "home"}
     return render(request, 'home.html', {'home': home})
 
 
 def form_page(request):
+    """
+    Renders the form.html template.  The user enters query selections
+    from the form page.
+    """
 
     return render(request, 'form.html')
 
 
 def submit_response(request):
+    """
+    Queries database for bikes matching user's selection criteria.
+    Renders a list of bikes that meet user's selection criteria.
+
+    Inputs - selection criteria entered by the user on the forms page
+    Output - A list of bike objects
+    """
+
     selected_choice = request.POST['bikes']
     selected_use = request.POST['bikeUse']
     selected_range = request.POST['bikeRange']
@@ -35,8 +53,16 @@ def submit_response(request):
 
 
 def bike_details(request):
+    """
+    Queries database for details on specified bike model and
+    renders details on a specific bike.
+
+    Input - A bike model
+    Output - A bike object containing details on the selected bike model
+    """
 
     bike_model = request.POST['bike_model']
     bikes = Bike.objects.filter(model__icontains=bike_model)  # returns list
                                                               # of Bike objects
+
     return render(request, 'bike_details.html', {'bikes': bikes})
