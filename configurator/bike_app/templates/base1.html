@@ -69,12 +69,13 @@
                 <img class="img-responsive img-rounded" src="{{bike.photo}}" alt="No Image Available">
             {% endfor %}
             </div>
-            <div class="col-md-6a">
-                <h3 align="right">The E-Bike Configurator</h3> 
-                <h4 align="right">Your Source for E-Bike Information</h4> 
+            {% if bikes %} 
+                <div class="col-md-6a col-md-offset-2">
+                <h3>The E-Bike Configurator</h3> 
+                <h4>Your Source for E-Bike Information</h4> 
+                <a class="btn btn-primary btn-lg" id="configurator" href="javascript: history.go(-1)">Return to Results Page</a> 
             </div>
-        </div>
-        <!-- /.row -->
+            {% endif %}
 
         <!-- Call to Action Well -->
             <div>
