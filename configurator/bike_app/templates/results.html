@@ -21,7 +21,7 @@
 <!-- <form action="action_page.php"> -->
 
   <div class="results" id="results">
-    {% if bikes %}        
+    {% if results %}        
     <h2 align="center">Matching Bike Results</h2>
     <table id= "results_table" class="table">
        <tr>
@@ -30,7 +30,7 @@
           <th style='font-weight: bold;'>Range<br>Miles</th>
           <th style='font-weight: bold;'>Max Speed</th>
         </tr>
-          {% for bike in bikes %}
+          {% for bike in results %}
            <tr>
               <td style="max-width:200px;"><form action="bike_details.html" method="post"><input class="btn btn-primary btn-sm" type="submit" value="{{bike.model}}" name="bike_model" style="width:350px"/>
               {% csrf_token %}
@@ -42,9 +42,11 @@
           {% endfor %}
     </table>
     {% else %}
-              <h2 align="center">Query returned no matching bikes.  Please refine your query.</h2>
+        <div class="col-md-6a col-md-offset-2">
+          <!-- <h2 align="center">Query returned no matching bikes.  Return to form and refine your query.</h2> -->
+          <a class="btn btn-primary btn-lg" id="configurator" href="form.html">Query returned no matching bikes.  Return to form and refine your query.</a>
+        </div>
     {% endif %}
-  </div>
 </body>
 {% endblock %}
 </html>
