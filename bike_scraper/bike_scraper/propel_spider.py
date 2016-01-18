@@ -12,11 +12,16 @@ class BikeItem(DjangoItem):
 
 
 class SpecsItem(scrapy.Item):
-    link = scrapy.Field()
+    """ Create a container to hold scraped data """
     attr = scrapy.Field()
 
 
 class PropelSpider(scrapy.Spider):
+    """
+    Spider to gather data from proplebikes.com website by all price point
+    categories.
+    """
+
     name = "propel"
     allowed_domains = ["propelbikes.com"]
     start_urls = ["http://propelbikes.com/bikes-by-price/2501-3500",
@@ -25,45 +30,58 @@ class PropelSpider(scrapy.Spider):
                   "http://propelbikes.com/bikes-by-price/more-than-4501"]
 
     def parse(self, response):
+        """
+        parse method scrapes fields for model price and URL which are all
+        located on one page.  Data is saved to these 3 postgres fields.
+        It then calls the parse_attr method with each bike model URL to
+        gather specification on each scraped bike model.
+        """
+
         models = response.xpath("//div[@class='name']/a/text()").extract()
         prices = response.xpath("//span[@class='price-fixed']/text()").extract()
-        locale.setlocale(locale.LC_ALL, '')  # Convert unicode currency to decimal
+        locale.setlocale(locale.LC_ALL, '')  # Convert unicode currency
+                                             # to decimal
         urls = response.xpath("//div[@class='name']/a/@href").extract()
-        for i in range(len(models)):
+        for i, model in enumerate(models):
             b = BikeItem()
-            price = "%.2f" % locale.atof(prices[i].strip('$').replace(',', '')[:])
+            price = "{0:.2f}".format(locale.atof(prices[i].strip('$')
+                    .replace(',', '')))
             b['model'] = models[i]
             b['price'] = price
             b['url'] = urls[i]
             if Bike.objects.filter(model=b['model']).exists():
-                print 'bike model exists.  calling update_or_add'
                 bike_record = Bike.objects.get(model=b['model'])
                 check_bike = UpdateBike()
-                detail_changes = check_bike.update_bike(bike_record, b)  # bike
+                check_bike.update_bike(bike_record, b)  # bike
                 # record exists.  Updating price or url if changed
-                print "Value of detail_changes is:  " + detail_changes
                 continue
             b.save()
 
-        for i in range(len(models)):
+        for i, model in enumerate(models):
             b = BikeItem()
             b['model'] = models[i]
             yield scrapy.Request(urls[i], callback=self.parse_attr)
 
-    def parse_attr(self, response):
+    @staticmethod
+    def parse_attr(response):
+        """
+        parse_attr method scrapes specifications for each bike model and saves
+        them to the appropriate postgres bike_app_bike record using existing
+        url field to determine which record to save the additional
+        data to.
+        """
+
         bike_dic = {}
         b = BikeItem()
         spec = SpecsItem()
-        Url = response.url
-        print "value of Url in parse_attr is:  " + Url
+        url = response.url
         spec["attr"] = response.xpath('//*[@id="tab-attribute"]/table/tbody/tr\
             /td/text()').extract()
-        bike_dic = dict(map(None, *[iter(spec["attr"])]*2))  
+        bike_dic = dict(map(None, *[iter(spec["attr"])]*2))
         # Converts list spec["attr"] to dict
-        b = Bike.objects.get(url=Url)
-        print "Value of b.url is: " + b.url
-        b_range = filter(str.isdigit, bike_dic["Range"]\
-            .encode('ascii', 'ignore'))
+        b = Bike.objects.get(url=url)
+        b_range = filter(str.isdigit, bike_dic["Range"]
+                            .encode('ascii', 'ignore'))
         best_use = bike_dic["Best Use"]
         assistance = bike_dic["Assistance"]
         motor = bike_dic["Motor"]
@@ -77,8 +95,8 @@ class PropelSpider(scrapy.Spider):
         battery = battery.replace(',', '')  # get rid of any #'s with commas
         battery = re.findall(r'\d*\.?\d+\s*[A,a,V,v,WH,Wh,wH,wh]+', battery)
         bat = []
-        print " !!! Value of battery is  !!!", battery
-        for i in range(len(battery)):
+        # for i in range(len(battery)):
+        for i, batr in enumerate(battery):
             if (i > 0) & ('v' in battery[i].lower()):  # save only 1st set of
                 break                                  # battery values
             bat.append(battery[i])
@@ -105,20 +123,32 @@ class PropelSpider(scrapy.Spider):
                     /div/a/@href').extract()
                 print "!!! b.photo and Url for felt bike is: "
                 print b.photo
-                print Url
         b.photo = b.photo[0].encode("ascii", "ignore")
         b.save()
 
 
 class UpdateBike():
+    """
+    Class used to make sure existing records are updated rather than
+    over-written.  This is necessary because comment fields are added by
+    the administrator and not found on the propel website.  If records
+    were over-written, administrator comments would be lost when the
+    scraper was run.
+    """
 
-    def update_bike(self, bike_record, b):
+    @staticmethod
+    def update_bike(bike_record, b):
+        """
+        Checks to see if a bike record has had changes to url or price fields.
+        If so, it updates these fields.
+        Input:  A bike record
+        Output: Message indicating function is complete.
+        """
+
         if bike_record.price != b['price']:
-            print "!!!! price has changed.  updating price !!!!"
             bike_record.price = b['price']
             bike_record.save()
         if bike_record.url != b['url']:
-            print "!!!! url has changed.  updating url !!!!"
             bike_record.url = b['url']
             bike_record.save()
-        return 'done with update_or_add'
+        return
