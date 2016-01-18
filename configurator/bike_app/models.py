@@ -2,6 +2,10 @@ from django.db import models
 
 
 class Bike(models.Model):
+    """
+    This class creates fields used in bike_app_bike table
+    """
+
     model = models.CharField(max_length=70)
     price = models.DecimalField(max_digits=6, decimal_places=2)
     url = models.CharField(max_length=150)
