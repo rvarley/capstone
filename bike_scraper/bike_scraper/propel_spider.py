@@ -85,45 +85,26 @@ class PropelSpider(scrapy.Spider):
         best_use = bike_dic["Best Use"]
         assistance = bike_dic["Assistance"]
         motor = bike_dic["Motor"]
-        top_speed = bike_dic["Top Speed"]
-        top_speed = max(map(float, re.findall(r'\d*\.?\d+', top_speed)))
+        top_speed = max(map(float, re.findall
+                        (r'\d*\.?\d+', bike_dic["Top Speed"])))
         if "Weight" in bike_dic:
-            weight = map(float, re.findall(r'\d*\.?\d+', bike_dic["Weight"]))[0]
-            b.weight = weight
+            b.weight = map(float, re.findall(r'\d*\.?\d+', bike_dic["Weight"]))[0]
         brakes = bike_dic["Brakes"].rstrip('\r+\n')
-        battery = bike_dic["Battery"]
-        battery = battery.replace(',', '')  # get rid of any #'s with commas
-        battery = re.findall(r'\d*\.?\d+\s*[A,a,V,v,WH,Wh,wH,wh]+', battery)
-        bat = []
-        # for i in range(len(battery)):
-        for i, batr in enumerate(battery):
-            if (i > 0) & ('v' in battery[i].lower()):  # save only 1st set of
-                break                                  # battery values
-            bat.append(battery[i])
-        battery = bat
+        format_bat = UpdateBike()
+        battery = format_bat.standard_battery(bike_dic)
+        if battery:  # Only populate field if relevent info exists
+            b.battery = battery
+        else:
+            b.battery = 'n/a'
+
         b.b_range = b_range
         b.best_use = best_use
         b.assistance = assistance
         b.motor = motor
         b.top_speed = top_speed
         b.brakes = brakes
-        if battery:  # Only populate field if relevent info exists
-            battery = [str(x) for x in battery]  # conv unicode to ascii
-            battery = [x.replace(' ', '') for x in battery]  # get rid of spaces
-            b.battery = ' '.join(battery).upper()  # convert list to string
-        b.photo = response.xpath('//*[@id="content"]/div[3]/div[1]/div[1]/\
-            div[1]/a/img/@src').extract()
-        # These if's are necessary for the 4 cases which xpath to photos isn't
-        # in the expected location
-        if not b.photo:
-            b.photo = response.xpath('//*[@id="content"]/div[4]/div[1]/div[1]\
-                /div/a/img/@src').extract()
-            if not b.photo:
-                b.photo = response.xpath('//*[@id="content"]/div/div[1]/div[1]\
-                    /div/a/@href').extract()
-                print "!!! b.photo and Url for felt bike is: "
-                print b.photo
-        b.photo = b.photo[0].encode("ascii", "ignore")
+        photo_url = UpdateBike()
+        b.photo = photo_url.get_photo(response)
         b.save()
 
 
@@ -152,3 +133,59 @@ class UpdateBike():
             bike_record.url = b['url']
             bike_record.save()
         return
+
+    @staticmethod
+    def standard_battery(bike_dic):
+        """
+        Function to take varying information in battery field and
+        extract only relevant information for the standard battery.
+        Formatted battery data is saved to postgres record in this funciton
+
+        input - dictionary for a single bike_record
+        output - formatted list of values for standard battery
+        """
+
+        battery = bike_dic["Battery"]
+        battery = battery.replace(',', '')  # get rid of any #'s with commas
+        battery = re.findall(r'\d*\.?\d+\s*[A,a,V,v,WH,Wh,wH,wh]+', battery)
+            # The above creates a list of battery specs like this -
+            # ['48 v', '6.6 ah', '316.8 wh']
+
+        bat = []
+        for i, batr in enumerate(battery):
+            if (i > 0) & ('v' in battery[i].lower()):  # save only 1st set of
+                break                                  # battery values
+            bat.append(battery[i])
+        if bat:  # Only populate field if relevent info exists
+            battery = [str(x) for x in bat]  # conv unicode to ascii
+            battery = [x.replace(' ', '') for x in battery]  # get rid of spaces
+            battery = ' '.join(battery).upper()  # make sure all values are
+                                                # uppercase
+            return battery
+        else:
+            return False
+
+    @staticmethod
+    def get_photo(response):
+        """
+        Function to take varying information in photo url field and
+        extract only relevant information.  In some cases, the photo
+        isn't in the expected location.  This method takes those cases
+        into account.
+
+        input - dictionary for a single bike_record
+        output - URL of bike photo
+        """
+
+        photo = response.xpath('//*[@id="content"]/div[3]/div[1]/div[1]/\
+            div[1]/a/img/@src').extract()
+        # These if's are necessary for the 4 cases which xpath to photos isn't
+        # in the expected location
+        if not photo:
+            photo = response.xpath('//*[@id="content"]/div[4]/div[1]/div[1]\
+                /div/a/img/@src').extract()
+            if not photo:
+                photo = response.xpath('//*[@id="content"]/div/div[1]/div[1]\
+                    /div/a/@href').extract()
+        photo = photo[0].encode("ascii", "ignore")
+        return photo
