@@ -11,8 +11,9 @@
 * PostgreSQL
 * JavaScript
 * jQuery
-* Bootstrap 3
+* Bootstrap 3.3.6
 * Sublime Text 2
+* pip 7.1.2
 
 
 ## Prerequisites
@@ -21,7 +22,79 @@
 * Installed [Python](https://www.python.org) and [Virtualenv](https://github.com/kennethreitz/python-guide/blob/master/docs/dev/virtualenvs.rst) in a unix-style environment. See this [guide](http://docs.python-guide.org/en/latest/starting/install/osx/) for guidance.
 * Your application must use pip to resolve dependencies.
 
-    *- credit to [Heroku](https://devcenter.heroku.com/articles/getting-started-with-python-o) documentation*
+Before attempting to run the configurator, run the propel_spider.py web scraper.
+This scraper uses scrapy, which at the time of this writing (21-Jan-2016) required
+python 2.7.  Set up a virtural environment with the following packages installed and run the scraper
+with the following command - 'scrapy runspider propel_spider.py'.  This will populate
+the postgres database.
+
+cffi==1.2.1
+characteristic==14.3.0
+cryptography==1.0.2
+cssselect==0.9.1
+diff-match-patch==20121119
+Django==1.9
+django-adaptors==0.2.5
+django-csv-importer==0.1.3.5
+django-import-export==0.4.1
+enum34==1.0.4
+idna==2.0
+ipaddress==1.0.14
+lxml==3.5.0
+numpy==1.10.2
+psycopg2==2.6.1
+pyasn1==0.1.9
+pyasn1-modules==0.0.8
+pycparser==2.14
+pyOpenSSL==0.15.1
+python-dateutil==2.4.2
+pytz==2015.7
+queuelib==1.4.2
+Scrapy==1.0.3
+scrapy-djangoitem==1.0.0
+selenium==2.48.0
+service-identity==14.0.0
+six==1.10.0
+tablib==0.10.0
+Twisted==15.4.0
+w3lib==1.13.0
+wheel==0.26.0
+zope.interface==4.1.3
+
+The configurator should be run in a virtual environment with the following packages installed:
+
+cffi==1.3.1
+characteristic==14.3.0
+cryptography==1.1.1
+cssselect==0.9.1
+diff-match-patch==20121119
+Django==1.9
+django-adaptors==0.2.5
+django-csv-importer==0.1.3.5
+django-import-export==0.4.0
+idna==2.0
+lxml==3.5.0
+numpy==1.10.1
+pandas==0.17.1
+psycopg2==2.6.1
+pyasn1==0.1.9
+pyasn1-modules==0.0.8
+pycparser==2.14
+pyOpenSSL==0.15.1
+python-dateutil==2.4.2
+pytz==2015.7
+queuelib==1.4.2
+Scrapy==1.0.3
+selenium==2.48.0
+service-identity==14.0.0
+six==1.10.0
+tablib==0.10.0
+Twisted==15.4.0
+w3lib==1.13.0
+wheel==0.26.0
+zope.interface==4.1.3
+
+
 
 ## Installation
 
@@ -32,10 +105,6 @@
 A fork is a copy of a repository. Forking a repository allows you to freely experiment with changes without affecting the original project. 
 
 On GitHub, navigate to the [https://github.com/rvarley/capstone) repository. See this [guide](https://help.github.com/articles/fork-a-repo/) for guidance to fork the repository.
-
-## Usage
-
-Add bried explanation of what the configurator will do
 
 
 ## Contributing
