@@ -1,6 +1,11 @@
 from django.shortcuts import render
 import re  # allows use of regex
 from bike_app.models import Bike
+from django.core.mail import EmailMessage
+from bike_app.forms import ContactForm
+from django.template.loader import get_template
+from django.template import Context
+from django.shortcuts import redirect
 
 
 def home_page(request):
@@ -20,7 +25,8 @@ def form_page(request):
     from the form page.
     """
 
-    return render(request, 'form.html')
+    form1 = {"form1": "form1"}
+    return render(request, 'form.html', {'form1': form1})
 
 
 def submit_response(request):
@@ -66,3 +72,48 @@ def bike_details(request):
                                                               # of Bike objects
 
     return render(request, 'bike_details.html', {'bikes': bikes})
+
+
+def contact(request):
+    form_class = ContactForm
+    if request.method == 'POST':
+        form = form_class(data=request.POST)
+
+        if form.is_valid():
+            contact_name = form.cleaned_data['contact_name']
+            contact_email = form.cleaned_data['contact_email']
+            form_content = form.cleaned_data['content']
+
+            # email the profile with contact info
+            template = get_template('contact_template.txt')
+
+            context = Context({
+                'contact_name': contact_name,
+                'contact_email': contact_email,
+                'form_content': form_content,
+            })
+            content = template.render(context)
+
+            email = EmailMessage(
+                'New contact form submission',
+                content,
+                'Your website <hi@weddinglovely.com>',
+                ['youremail@gmail.com'],
+                headers={'Reply-To': contact_email}
+            )
+            email.send()
+            return redirect('contact')
+
+    return render(request, 'contact.html', {'form': form_class})
+
+
+def safety(request):
+        return render(request, 'safety.html', {'safety': safety})
+
+
+def technologies(request):
+        return render(request, 'technologies.html', {'technologies': technologies})
+
+
+def features(request):
+        return render(request, 'features.html', {'features': features})
