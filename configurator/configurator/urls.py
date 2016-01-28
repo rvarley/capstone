@@ -20,8 +20,12 @@ from bike_app import views
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', views.home_page, name='home'),
+    url(r'^[Hh]ome', views.home_page, name='home'),
     url(r'^results', views.submit_response, name='submit_response'),
     url(r'^form', views.form_page, name='form'),
     url(r'^bike_details', views.bike_details, name='bike_details'),
-    # url(r'^bike_details/(?P<bike_model>[a-zA-Z0-9]*)/*', views.bike_details, name='bike_details'),
+    url(r'^contact', views.contact, name='contact'),
+    url(r'^safety', views.safety, name='safety'),
+    url(r'^technologies', views.technologies, name='technologies'),
+    url(r'^features', views.features, name='features'),
 ]
