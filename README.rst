@@ -25,7 +25,7 @@ Site Demo
 Admin Demo
 ----------
 
-.. image:: e-bike-demo-1.gif
+.. image:: e-bike-demo-2.gif
 
 Prerequisites
 -------------
