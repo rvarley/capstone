@@ -1,15 +1,24 @@
 from selenium import webdriver
 import unittest
 import time
+import re
+
 
 """
 This functional test should pass 5 test cases.  It is necessary to run the
 propel_spider.py scraper to populate the database prior to running these test.
-Test was run in a virtual environment with the packages installed as 
-per the README.md file for this project. 
+Test was run in a virtual environment with the packages installed as
+per the README.md file for this project.
 """
 
+
 class NewVisitorTest(unittest.TestCase):
+
+    def go_home(self):
+        self.browser.get('http://localhost:8000')
+
+    def go_form(self):
+        self.browser.get('http://localhost:8000/form.html')
 
     def setUp(self):
         self.browser = webdriver.Firefox()
@@ -17,9 +26,10 @@ class NewVisitorTest(unittest.TestCase):
         self.browser.implicitly_wait(5)
 
     def tearDown(self):
-        time.sleep(2)
+        time.sleep(3)
         self.browser.quit()
 
+    """
     def test_can_go_to_configurator_homepage(self):
         # Sally is interested in purchasing an ebike and heard
         # about a website that can help he make a good purchase decision
@@ -27,15 +37,98 @@ class NewVisitorTest(unittest.TestCase):
 
         # She noticed the page title reads 'E-bike Configuration Tool'
         self.assertIn('Configurator', self.browser.title)
-        header_text = self.browser.find_element_by_tag_name('h1').text
+        header_text = self.browser.find_element_by_tag_name('h3').text
         self.assertIn('Your Source for E-bike Information', header_text)
 
         # She finds a series of buttons including
-        # 'Configure My Bike', 'Build Your Own', 'Off The Shelf', 
+        # 'Configure My Bike', 'Build Your Own', 'Off The Shelf',
         # and 'Legal and Saftey'
         button_text = self.browser.find_element_by_id('configure_my_bike').text
         self.assertIn('Configure My Bike!', button_text)
 
+    def test_home_page_footer_buttons(self):
+        # Make sure all 3 footer buttons on home page work correctly
+        NewVisitorTest.go_home(self)
+        self.browser.find_element_by_xpath('//*[@id="safety"]').click()
+        safety_text = self.browser.find_element_by_xpath('/html/body/div/div/div[3]/h3').text
+        self.assertIn('On Going Safety Precautions', safety_text)
+        NewVisitorTest.go_home(self)
+        self.browser.find_element_by_xpath('//*[@id="technology"]').click()
+        tech_text = self.browser.find_element_by_xpath('/html/body/div/div/div[3]/h1').text
+        self.assertIn('E-Bike Technology', tech_text)
+        NewVisitorTest.go_home(self)
+        self.browser.find_element_by_xpath('//*[@id="features"]').click()
+        time.sleep(1)
+        equipment_text = self.browser.find_element_by_xpath('/html/body/div/div/div[3]/h1').text
+        self.assertIn('Additional Equipment', equipment_text)
+    """
+    """
+    def test_form_page_menus(self):
+        # Test menu options on form page
+        # Go to from page
+        NewVisitorTest.go_form(self)
+        h2_text = self.browser.find_element_by_tag_name('h2').text
+        self.assertIn('What is your budget', h2_text)
+
+        # Find home menu option on form pate and verify it goes back to home page
+        menu_choice = self.browser.find_element_by_xpath('//*[@id="bs-example-navbar-collapse-1"]/ul/li[1]/a')
+        time.sleep(1)
+        menu_choice.click()
+        button_text = self.browser.find_element_by_id('configure_my_bike').text
+        self.assertIn('Configure My Bike!', button_text)
+
+        # Find contact menu option and make sure it goes to contact page
+        NewVisitorTest.go_form(self)
+        menu_choice = self.browser.find_element_by_xpath('//*[@id="bs-example-navbar-collapse-1"]/ul/li[2]/a')
+        time.sleep(1)
+        menu_choice.click()
+        contact_text = self.browser.find_element_by_tag_name('h3').text
+        self.assertIn('Contact Form', contact_text)
+    """
+    """
+    def test_form_page_form(self):
+        # Tests for form drop down menu options
+        # Best Use 'Comfort Cruiser'
+        NewVisitorTest.go_form(self)
+        self.browser.find_element_by_xpath('//*[@id="price"]/select[2]/option[2]').click()
+        self.browser.find_element_by_id('submit').click()
+
+        # Click on first bike in the results table and make sure the results
+        # table lists 'Comfort and Cruiser' in 'Best Use' row
+        # This test requires a bike the meets search criteria in database
+        self.browser.find_element_by_xpath('//*[@id="results_table"]/tbody/tr[2]/td[1]/form/input[1]').click()
+        best_use = self.browser.find_element_by_xpath('//*[@id="results_table"]/tbody/tr[2]/td[2]').text
+        self.assertIn('Comfort Cruiser', best_use)
+
+        # Find and click button to return to results page
+        self.browser.find_element_by_xpath('//*[@id="configurator"]').click()
+        """
+        # Select Budget '2501 - 3500' and Best Use 'Cargo & Hauling'
+        # Test all price drop downs work
+
+    def test_form_page_form(self):
+        price = {1:1501, 2:2501, 3:3501, 4:4501}
+        for i in range(1,2):
+            # xpath = "'" + "//*[@id=\"price\"]/select[1]/option[" + str(i) + "]" + "'"
+            xpath = "//*[@id=\"price\"]/select[1]/option[" + str(i) + "]"
+            NewVisitorTest.go_form(self)
+        # self.browser.find_element_by_xpath('//*[@id="price"]/select[1]/option[2]').click()
+            self.browser.find_element_by_xpath(xpath).click()
+
+        # Click Submit button to load results page
+            self.browser.find_element_by_id('submit').click()
+
+            # Click on first entry in the results table and confirm bike is within price range
+            # self.browser.find_element_by_xpath('//*[@id="results_table"]/tbody/tr[2]/td[1]/form/input[1]').click()
+            # price = int(self.browser.find_element_by_xpath('//*[@id="results_table"]/tbody/tr[2]/td[2]/text()').extract())
+            price = self.browser.find_element_by_xpath('//*[@id="results_table"]/tbody/tr[2]/td[2]/text()')[0].extract()
+            # self.assertGreaterEqual(price[i], price)
+            print("price found is: ", price)
+            time.sleep(1)
+
+            # self.assertIn('Cargo & Hauling', best_use)
+
+"""
     def test_can_go_to_form_page(self):
         # She presses the 'Configure My Bike' button and is taken to
         # the questioneer form.
@@ -110,6 +203,7 @@ class NewVisitorTest(unittest.TestCase):
         button_id = self.browser.find_element_by_xpath\
             ('//*[@id="configurator"]')
         button_id.click()
+"""
 
 if __name__ == '__main__':
     unittest.main(warnings='ignore')
