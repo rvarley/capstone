@@ -68,8 +68,8 @@ def bike_details(request):
     """
 
     bike_model = request.POST['bike_model']
-    bikes = Bike.objects.filter(model__icontains=bike_model)  # returns list
-                                                              # of Bike objects
+    bikes = Bike.objects.filter(model__exact=bike_model)  # returns list
+    print("value of bikes is: ", bikes)                   # of Bike objects
 
     return render(request, 'bike_details.html', {'bikes': bikes})
 
