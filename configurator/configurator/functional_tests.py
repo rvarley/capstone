@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium import selenium
 import unittest
 import time
 import re
@@ -13,8 +14,14 @@ per the README.md file for this project.
 
 
 class NewVisitorTest(unittest.TestCase):
+    """ 
+    doc string test 
+    """
 
     def go_home(self):
+        """ 
+        doc string test 
+        """
         self.browser.get('http://localhost:8000')
 
     def go_form(self):
@@ -29,7 +36,6 @@ class NewVisitorTest(unittest.TestCase):
         time.sleep(3)
         self.browser.quit()
 
-    """
     def test_can_go_to_configurator_homepage(self):
         # Sally is interested in purchasing an ebike and heard
         # about a website that can help he make a good purchase decision
@@ -47,7 +53,10 @@ class NewVisitorTest(unittest.TestCase):
         self.assertIn('Configure My Bike!', button_text)
 
     def test_home_page_footer_buttons(self):
+        """
         # Make sure all 3 footer buttons on home page work correctly
+        """
+
         NewVisitorTest.go_home(self)
         self.browser.find_element_by_xpath('//*[@id="safety"]').click()
         safety_text = self.browser.find_element_by_xpath('/html/body/div/div/div[3]/h3').text
@@ -61,11 +70,13 @@ class NewVisitorTest(unittest.TestCase):
         time.sleep(1)
         equipment_text = self.browser.find_element_by_xpath('/html/body/div/div/div[3]/h1').text
         self.assertIn('Additional Equipment', equipment_text)
-    """
-    """
+
     def test_form_page_menus(self):
-        # Test menu options on form page
-        # Go to from page
+        """
+        Test menu options on form page
+        Go to from page
+        """
+
         NewVisitorTest.go_form(self)
         h2_text = self.browser.find_element_by_tag_name('h2').text
         self.assertIn('What is your budget', h2_text)
@@ -84,11 +95,13 @@ class NewVisitorTest(unittest.TestCase):
         menu_choice.click()
         contact_text = self.browser.find_element_by_tag_name('h3').text
         self.assertIn('Contact Form', contact_text)
-    """
-    """
+
     def test_form_page_form(self):
-        # Tests for form drop down menu options
-        # Best Use 'Comfort Cruiser'
+        """
+        Tests for form drop down menu options
+        Best Use 'Comfort Cruiser'
+        """
+
         NewVisitorTest.go_form(self)
         self.browser.find_element_by_xpath('//*[@id="price"]/select[2]/option[2]').click()
         self.browser.find_element_by_id('submit').click()
@@ -102,33 +115,46 @@ class NewVisitorTest(unittest.TestCase):
 
         # Find and click button to return to results page
         self.browser.find_element_by_xpath('//*[@id="configurator"]').click()
-        """
+
         # Select Budget '2501 - 3500' and Best Use 'Cargo & Hauling'
         # Test all price drop downs work
 
-    def test_form_page_form(self):
-        price = {1:1501, 2:2501, 3:3501, 4:4501}
-        for i in range(1,2):
+    def test_form_page_form_1(self):
+        """
+        Test to go to each price point and make sure all the rows in the
+        table contain bikes in the correct price range as specified
+        on the form page
+        """
+
+        prices = {1:1501, 2:2501, 3:3501, 4:4501}
+        # for loop to check each price range
+        for x in range(1,5):
             # xpath = "'" + "//*[@id=\"price\"]/select[1]/option[" + str(i) + "]" + "'"
-            xpath = "//*[@id=\"price\"]/select[1]/option[" + str(i) + "]"
+            xpath = "//*[@id=\"price\"]/select[1]/option[" + str(x) + "]"
+            print("value of xpath is: ", xpath)
             NewVisitorTest.go_form(self)
-        # self.browser.find_element_by_xpath('//*[@id="price"]/select[1]/option[2]').click()
             self.browser.find_element_by_xpath(xpath).click()
 
         # Click Submit button to load results page
             self.browser.find_element_by_id('submit').click()
+            # Count the number of rows on the resulting page
+            # If rows are > 0, check each row for the correct price
+            rows = len(self.browser.find_elements_by_xpath('//*[@id="results_table"]/tbody/tr'))
+            print('table rowCount is ', rows)
+            if rows > 0:  # Don't do this check if query returned no bikes
+                for i in range(2, rows):
+                    price = self.browser.find_element_by_xpath('//*[@id="results_table"]/tbody/tr[2]/td[2]')
+                    print("price found is{}.  min price range is {} ".format(price.text, prices[x]))
+                    print("The value of x is: ", x)
+                    self.assertGreaterEqual(float(price.text), prices[x])
+                    if x == 4:
+                        y = 5000
+                    else:
+                        y = 999
+                    self.assertLessEqual(float(price.text), (prices[x] + y) )
+                    time.sleep(1)
 
-            # Click on first entry in the results table and confirm bike is within price range
-            # self.browser.find_element_by_xpath('//*[@id="results_table"]/tbody/tr[2]/td[1]/form/input[1]').click()
-            # price = int(self.browser.find_element_by_xpath('//*[@id="results_table"]/tbody/tr[2]/td[2]/text()').extract())
-            price = self.browser.find_element_by_xpath('//*[@id="results_table"]/tbody/tr[2]/td[2]/text()')[0].extract()
-            # self.assertGreaterEqual(price[i], price)
-            print("price found is: ", price)
-            time.sleep(1)
 
-            # self.assertIn('Cargo & Hauling', best_use)
-
-"""
     def test_can_go_to_form_page(self):
         # She presses the 'Configure My Bike' button and is taken to
         # the questioneer form.
@@ -203,7 +229,7 @@ class NewVisitorTest(unittest.TestCase):
         button_id = self.browser.find_element_by_xpath\
             ('//*[@id="configurator"]')
         button_id.click()
-"""
+
 
 if __name__ == '__main__':
     unittest.main(warnings='ignore')
