@@ -58,11 +58,17 @@
         </div>
             </div>
         </nav>
+    <script src="../static/js/home.js"></script>
     <div class="content container">
         <div class="row">
             {% if not form %}
-            <div class="col-md-5">
-            <img class="img-responsive img-rounded" src="http://cdn.propelbikes.com/image/cache/data/png_1024x1024-420x420.jpg" alt="Image not found"> 
+            <div id="col-md-5" class="col-md-5">
+            <!-- <img class="img-responsive" src = "javascript: var i = 1 changeImage(i)"> -->
+            <img class="img-responsive img-rounded modal-backdrop.in" id="patrick" src="http://cdn.propelbikes.com/image/cache/data/png_1024x1024-420x420.jpg" alt="Image not found">
+            <script>
+                var i = 0; 
+                changeImage(i)
+            </script> 
             </div>
             {% endif %}
             {% if home %}
