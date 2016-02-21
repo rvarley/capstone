@@ -58,17 +58,15 @@
         </div>
             </div>
         </nav>
-    <script src="../static/js/home.js"></script>
     <div class="content container">
+        {% if not form and not results %}
         <div class="row">
-            {% if not form %}
-            <div id="col-md-5" class="col-md-5">
-            <!-- <img class="img-responsive" src = "javascript: var i = 1 changeImage(i)"> -->
-            <img class="img-responsive img-rounded modal-backdrop.in" id="patrick" src="http://cdn.propelbikes.com/image/cache/data/png_1024x1024-420x420.jpg" alt="Image not found">
-            <script>
-                var i = 0; 
-                changeImage(i)
-            </script> 
+            <div class="col-md-5">
+                <div class="cycle-slideshow">
+                    <img src ='http://cdn.propelbikes.com/image/cache/data/Victoria/Pedego Interceptor-420x420.jpg' height=350 width=350>
+                    <img src = 'http://cdn.propelbikes.com/image/cache/data/felt-lebowske-420x420.jpg' height=350 width=350>
+                    <img src = 'http://cdn.propelbikes.com/image/cache/data/Victoria/28 Classic City Blue-420x420.jpg' height=350 width=350>
+                </div>
             </div>
             {% endif %}
             {% if home %}
@@ -83,10 +81,29 @@
                 <h4>Your Source for E-Bike Information</h4> 
                 <a class="btn btn-primary btn-lg" id="configurator" href="home.html">Return to Home Page</a>
             {% elif results %}
-                <div class="col-md-6a col-md-offset-2">
-                <h3>The E-Bike Configurator</h3> 
-                <h4>Your Source for E-Bike Information</h4> 
-                <a class="btn btn-primary btn-lg" id="configurator" href="form.html">Return to Configurator Form</a>
+                <div class="row">
+                    <div id="col-md-5" class="col-md-5">
+                         <div class="cycle-slideshow" 
+                            data-cycle-pause-on-hover="true"
+                            data-cycle-caption="#alt-caption"
+                            data-cycle-caption-template="{{alt}}"
+                         >
+                      {% for bike in results %}
+                        <img src = "{{ bike.photo }}" height=350 width=350 
+                        alt="Hello">
+                      {% endfor %}
+                </div>
+                <!-- empty element for caption -->
+                <div id="alt-caption" class="center"></div>
+                </div>
+                    <div id="col-md-5" class="col-md-5">
+                        <h3>The E-Bike Configurator</h3> 
+                        <h4>Your Source for E-Bike Information</h4> 
+                        <a class="btn btn-primary btn-lg" id="configurator" href="form.html">Return to Configurator Form</a>
+                    </div>
+
+                </div>
+              </div>
             {% elif form %}
                 <h3 align="center">Contact Form<h3>
             {% else %}
@@ -107,6 +124,8 @@
             </div>
         </div>
     </div>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+        <script src="http://malsup.github.com/jquery.cycle2.js"></script>
 </body>
 
 
